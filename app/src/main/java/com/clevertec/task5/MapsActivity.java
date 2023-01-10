@@ -1,14 +1,23 @@
 package com.clevertec.task5;
 
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
+import com.clevertec.task5.api.AtmApiService;
+import com.clevertec.task5.api.impl.AtmApiServiceImpl;
 import com.clevertec.task5.databinding.ActivityMapsBinding;
+import com.clevertec.task5.dto.AtmDto;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+
+import static com.clevertec.task5.constants.Constants.*;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -39,11 +48,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap = googleMap;
+        AtmApiService atmAnswer = new AtmApiServiceImpl(this);
+        atmAnswer.getAtms(DEFAULT_CITY);
+    }
+
+    public void addMarkers(List<AtmDto> list) {
+
+        LatLng gomel = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
+        CameraPosition cameraPosition = CameraPosition.builder()
+                .target(gomel)
+                .zoom(8f)
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
+        mMap.setTrafficEnabled(true);
+
+        if (list != null && list.size() != 0) {
+            for (AtmDto bank : list) {
+                mMap.addMarker(
+                        new MarkerOptions()
+                                .position(new LatLng(Double.parseDouble(bank.getGpsX()), Double.parseDouble(bank.getGpsY())))
+                                .title(bank.getAddressType() + " " + bank.getAddress() + " " + bank.getHouse())
+                                .snippet(bank.getInstallPlace())
+                );
+            }
+        } else {
+            Toast.makeText(this, NO_ATMS_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
+        }
     }
 }
