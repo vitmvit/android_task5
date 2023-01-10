@@ -52,10 +52,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         AtmApiService atmAnswer = new AtmApiServiceImpl(this);
         atmAnswer.getAtms(DEFAULT_CITY);
-    }
-
-    public void addMarkers(List<AtmDto> list) {
-
         LatLng gomel = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(gomel)
@@ -64,6 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
         mMap.setTrafficEnabled(true);
+    }
+
+    public void addMarkersAtm(List<AtmDto> list) {
 
         if (list != null && list.size() != 0) {
             for (AtmDto bank : list) {
