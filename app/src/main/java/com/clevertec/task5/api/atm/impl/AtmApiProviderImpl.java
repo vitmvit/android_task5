@@ -1,7 +1,7 @@
-package com.clevertec.task5.api.impl;
+package com.clevertec.task5.api.atm.impl;
 
-import com.clevertec.task5.api.AtmApi;
-import com.clevertec.task5.api.AtmApiProvider;
+import com.clevertec.task5.api.atm.AtmApi;
+import com.clevertec.task5.api.atm.AtmApiProvider;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

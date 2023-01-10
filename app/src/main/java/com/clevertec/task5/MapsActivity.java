@@ -3,14 +3,21 @@ package com.clevertec.task5;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
-import com.clevertec.task5.api.AtmApiService;
-import com.clevertec.task5.api.impl.AtmApiServiceImpl;
+import com.clevertec.task5.api.atm.AtmApiService;
+import com.clevertec.task5.api.atm.impl.AtmApiServiceImpl;
+import com.clevertec.task5.api.filial.FilialApiService;
+import com.clevertec.task5.api.filial.impl.FilialApiServiceImpl;
+import com.clevertec.task5.api.infobox.InfoboxApiService;
+import com.clevertec.task5.api.infobox.impl.InfoboxApiServiceImpl;
 import com.clevertec.task5.databinding.ActivityMapsBinding;
 import com.clevertec.task5.dto.AtmDto;
+import com.clevertec.task5.dto.FilialDto;
+import com.clevertec.task5.dto.InfoboxDto;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,12 +57,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+
         AtmApiService atmAnswer = new AtmApiServiceImpl(this);
         atmAnswer.getAtms(DEFAULT_CITY);
+
+        InfoboxApiService infoboxAnswer = new InfoboxApiServiceImpl(this);
+        infoboxAnswer.getInfoboxs(DEFAULT_CITY);
+
+        FilialApiService filialAnswer = new FilialApiServiceImpl(this);
+        filialAnswer.getFilials(DEFAULT_CITY);
+
         LatLng gomel = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(gomel)
-                .zoom(8f)
+                .zoom(9f)
                 .build();
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
@@ -69,12 +84,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(
                         new MarkerOptions()
                                 .position(new LatLng(Double.parseDouble(bank.getGpsX()), Double.parseDouble(bank.getGpsY())))
-                                .title(bank.getAddressType() + " " + bank.getAddress() + " " + bank.getHouse())
-                                .snippet(bank.getInstallPlace())
+                                .title(ATM_TITLE)
+                                .snippet(bank.getAddressType() + " " + bank.getAddress() + " " + bank.getHouse())
                 );
             }
         } else {
             Toast.makeText(this, NO_ATMS_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void addMarkersInfobox(List<InfoboxDto> list) {
+
+        if (list != null && list.size() != 0) {
+            for (InfoboxDto bank : list) {
+                mMap.addMarker(
+                        new MarkerOptions()
+                                .position(new LatLng(Double.parseDouble(bank.getGpsX()), Double.parseDouble(bank.getGpsY())))
+                                .title(INFOBOX_TITLE)
+                                .snippet(bank.getAddressType() + " " + bank.getAddress() + " " + bank.getHouse())
+                );
+            }
+        } else {
+            Toast.makeText(this, NO_INFOBOXS_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void addMarkersFilial(List<FilialDto> list) {
+
+        if (list != null && list.size() != 0) {
+            for (FilialDto bank : list) {
+                mMap.addMarker(
+                        new MarkerOptions()
+                                .position(new LatLng(Double.parseDouble(bank.getGpsX()), Double.parseDouble(bank.getGpsY())))
+                                .title(FILIAL_TITLE)
+                                .snippet(bank.getStreetType() + " " + bank.getStreet() + " " + bank.getHomeNumber())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_location_on_black_24dp)));
+            }
+        } else {
+            Toast.makeText(this, NO_FILIALS_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.clevertec.task5.api;
+package com.clevertec.task5.api.atm;
 
 public interface AtmApiProvider {
 

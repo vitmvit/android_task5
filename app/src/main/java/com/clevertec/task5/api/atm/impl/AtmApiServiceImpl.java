@@ -1,9 +1,9 @@
-package com.clevertec.task5.api.impl;
+package com.clevertec.task5.api.atm.impl;
 
 import android.widget.Toast;
 import com.clevertec.task5.MapsActivity;
-import com.clevertec.task5.api.AtmApiProvider;
-import com.clevertec.task5.api.AtmApiService;
+import com.clevertec.task5.api.atm.AtmApiProvider;
+import com.clevertec.task5.api.atm.AtmApiService;
 import com.clevertec.task5.dto.AtmDto;
 import retrofit2.Call;
 import retrofit2.Callback;

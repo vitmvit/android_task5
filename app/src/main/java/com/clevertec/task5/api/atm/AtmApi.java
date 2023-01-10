@@ -1,4 +1,4 @@
-package com.clevertec.task5.api;
+package com.clevertec.task5.api.atm;
 
 import com.clevertec.task5.dto.AtmDto;
 import retrofit2.Call;
