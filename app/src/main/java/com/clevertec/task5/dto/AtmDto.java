@@ -1,9 +1,8 @@
 package com.clevertec.task5.dto;
 import com.google.gson.annotations.SerializedName;
 
-public class AtmDto {
+public class AtmDto extends ApiData {
 
-    private String id;
     private String area;
 
     @SerializedName("city_type")
@@ -45,14 +44,6 @@ public class AtmDto {
 
     @SerializedName("ATM_printer")
     private String atmPrinter;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getArea() {
         return area;
