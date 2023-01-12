@@ -10,13 +10,14 @@ public class Markers {
     private String gpsY;
     private double distance;
 
-    public Markers(String typeObject, String addressType, String address, String house, String gpsX, String gpsY) {
+    public Markers(String typeObject, String addressType, String address, String house, String gpsX, String gpsY, double distance) {
         this.typeObject = typeObject;
         this.addressType = addressType;
         this.address = address;
         this.house = house;
         this.gpsX = gpsX;
         this.gpsY = gpsY;
+        this.distance = distance;
     }
 
     public String getTypeObject() {
@@ -71,8 +72,8 @@ public class Markers {
         return distance;
     }
 
-    public void setDistance(double x1, double y1) {
-        this.distance = Math.sqrt(Math.pow(Math.abs(Double.parseDouble(this.getGpsX()) - x1), 2) + Math.pow(Math.abs(Double.parseDouble(this.getGpsY()) - y1), 2));
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }
 

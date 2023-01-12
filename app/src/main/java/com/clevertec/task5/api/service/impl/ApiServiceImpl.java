@@ -19,12 +19,12 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.clevertec.task5.constants.Constants.BASE_URL;
-import static com.clevertec.task5.constants.Constants.DATA_LOADING_ERROR;
+import static com.clevertec.task5.constants.Constants.*;
 
 public class ApiServiceImpl implements ApiService {
 
@@ -49,18 +49,18 @@ public class ApiServiceImpl implements ApiService {
         Observable<List<InfoboxDto>> call3 = infoboxApi.getInfobox(city);
 
         Observable
-                .concat(call1, call2, call3)
+                .merge(call1, call2, call3)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<? extends ApiData>>() {
 
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NotNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<? extends ApiData> apiDataList) {
+                    public void onNext(@NotNull List<? extends ApiData> apiDataList) {
                         for (ApiData apiData : apiDataList) {
                             markers.add(new Markers(
                                     MarkerUtils.getTypeObject(apiData),
@@ -68,13 +68,14 @@ public class ApiServiceImpl implements ApiService {
                                     MarkerUtils.getAddress(apiData),
                                     MarkerUtils.getHouse(apiData),
                                     MarkerUtils.getGpsX(apiData),
-                                    MarkerUtils.getGpsY(apiData))
-                            );
+                                    MarkerUtils.getGpsY(apiData),
+                                    MarkerUtils.findDistance(apiData, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD)
+                            ));
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NotNull Throwable e) {
                         Toast.makeText(mapsActivity, DATA_LOADING_ERROR, Toast.LENGTH_LONG).show();
                     }
 

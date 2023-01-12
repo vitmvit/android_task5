@@ -1,13 +1,14 @@
 package com.clevertec.task5;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import com.clevertec.task5.api.service.ApiService;
 import com.clevertec.task5.api.service.impl.ApiServiceImpl;
 import com.clevertec.task5.databinding.ActivityMapsBinding;
 import com.clevertec.task5.model.Markers;
-import com.clevertec.task5.util.MarkerSorter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,6 +18,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.clevertec.task5.constants.Constants.*;
@@ -63,9 +66,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         apiService.getAtms(DEFAULT_CITY);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setApiDataList(List<Markers> listMarkers) {
-        List<Markers> m = new MarkerSorter().sortMarkersList(listMarkers, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
-        addMarkers(m.subList(0, COUNT_MARKERS + 1));
+        Collections.sort(listMarkers, Comparator.comparing(Markers::getDistance));
+        addMarkers(listMarkers.subList(0, COUNT_MARKERS + 1));
     }
 
     public void addMarkers(List<Markers> markers) {
@@ -76,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .position(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())))
                                 .title(m.getTypeObject())
                                 .snippet(m.getAddressType() + " " + m.getAddress() + " " + m.getHouse())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_orange))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue))
 
                 );
             }

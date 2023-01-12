@@ -80,4 +80,15 @@ public class MarkerUtils {
         }
         return DEFAULT_GPS_Y;
     }
+
+    public static double findDistance(ApiData apiData, double x, double y) {
+        if (apiData instanceof AtmDto) {
+            return Math.sqrt(Math.pow(Math.abs(Double.parseDouble(((AtmDto) apiData).getGpsX()) - x), 2) + Math.pow(Math.abs(Double.parseDouble(((AtmDto) apiData).getGpsY()) - y), 2));
+        } else if (apiData instanceof FilialDto) {
+            return Math.sqrt(Math.pow(Math.abs(Double.parseDouble(((FilialDto) apiData).getGpsX()) - x), 2) + Math.pow(Math.abs(Double.parseDouble(((FilialDto) apiData).getGpsY()) - y), 2));
+        } else if (apiData instanceof InfoboxDto) {
+            return Math.sqrt(Math.pow(Math.abs(Double.parseDouble(((InfoboxDto) apiData).getGpsX()) - x), 2) + Math.pow(Math.abs(Double.parseDouble(((InfoboxDto) apiData).getGpsY()) - y), 2));
+        }
+        return DEFAULT_DISTANCE;
+    }
 }

@@ -19,6 +19,7 @@ public class Constants {
     public static final String DEFAULT_GPS_X = "Долгота";
     public static final String DEFAULT_GPS_Y = "Широта";
     public static final String DEFAULT_CITY = "Гомель";
+    public static final double DEFAULT_DISTANCE = 100;
 
     //------------------------------------------------------------------------------------------------------------------
     public static final String ATM_TITLE = "Банкомат";
