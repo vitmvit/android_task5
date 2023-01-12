@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.clevertec.task5.api.service.ApiService;
 import com.clevertec.task5.api.service.impl.ApiServiceImpl;
 import com.clevertec.task5.databinding.ActivityMapsBinding;
-import com.clevertec.task5.model.Markers;
+import com.clevertec.task5.model.Marker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -67,14 +66,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void setApiDataList(List<Markers> listMarkers) {
-        Collections.sort(listMarkers, Comparator.comparing(Markers::getDistance));
-        addMarkers(listMarkers.subList(0, COUNT_MARKERS + 1));
+    public void setApiDataList(List<Marker> markerList) {
+        markerList.sort(Comparator.comparing(Marker::getDistance));
+        addMarkers(
+                markerList.size() < COUNT_MARKERS + 1
+                        ? markerList
+                        : markerList.subList(0, COUNT_MARKERS + 1)
+        );
     }
 
-    public void addMarkers(List<Markers> markers) {
-        if (markers != null && markers.size() != 0) {
-            for (Markers m : markers) {
+    public void addMarkers(List<Marker> markerList) {
+        if (markerList != null && markerList.size() != 0) {
+            for (Marker m : markerList) {
                 mMap.addMarker(
                         new MarkerOptions()
                                 .position(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())))

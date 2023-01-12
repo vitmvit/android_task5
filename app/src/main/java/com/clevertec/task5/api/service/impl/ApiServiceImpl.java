@@ -1,7 +1,9 @@
 package com.clevertec.task5.api.service.impl;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import com.clevertec.task5.MapsActivity;
 import com.clevertec.task5.api.AtmApi;
 import com.clevertec.task5.api.FilialApi;
@@ -12,7 +14,7 @@ import com.clevertec.task5.dto.ApiData;
 import com.clevertec.task5.dto.impl.AtmDto;
 import com.clevertec.task5.dto.impl.FilialDto;
 import com.clevertec.task5.dto.impl.InfoboxDto;
-import com.clevertec.task5.model.Markers;
+import com.clevertec.task5.model.Marker;
 import com.clevertec.task5.util.MarkerUtils;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -32,7 +34,7 @@ public class ApiServiceImpl implements ApiService {
     private final AtmApi atmApi;
     private final FilialApi filialApi;
     private final InfoboxApi infoboxApi;
-    private final List<Markers> markers = new ArrayList<>();
+    private final List<Marker> markers = new ArrayList<>();
 
     public ApiServiceImpl(MapsActivity mapsActivity) {
         this.mapsActivity = mapsActivity;
@@ -62,7 +64,7 @@ public class ApiServiceImpl implements ApiService {
                     @Override
                     public void onNext(@NotNull List<? extends ApiData> apiDataList) {
                         for (ApiData apiData : apiDataList) {
-                            markers.add(new Markers(
+                            markers.add(new Marker(
                                     MarkerUtils.getTypeObject(apiData),
                                     MarkerUtils.getAddressType(apiData),
                                     MarkerUtils.getAddress(apiData),
@@ -79,6 +81,7 @@ public class ApiServiceImpl implements ApiService {
                         Toast.makeText(mapsActivity, DATA_LOADING_ERROR, Toast.LENGTH_LONG).show();
                     }
 
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onComplete() {
                         mapsActivity.setApiDataList(markers);

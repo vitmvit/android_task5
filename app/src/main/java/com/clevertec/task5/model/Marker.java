@@ -1,6 +1,6 @@
 package com.clevertec.task5.model;
 
-public class Markers {
+public class Marker {
 
     private String typeObject;
     private String addressType;
@@ -10,7 +10,7 @@ public class Markers {
     private String gpsY;
     private double distance;
 
-    public Markers(String typeObject, String addressType, String address, String house, String gpsX, String gpsY, double distance) {
+    public Marker(String typeObject, String addressType, String address, String house, String gpsX, String gpsY, double distance) {
         this.typeObject = typeObject;
         this.addressType = addressType;
         this.address = address;
