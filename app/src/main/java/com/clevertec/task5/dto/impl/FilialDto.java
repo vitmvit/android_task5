@@ -1,5 +1,6 @@
-package com.clevertec.task5.dto;
+package com.clevertec.task5.dto.impl;
 
+import com.clevertec.task5.dto.ApiData;
 import com.google.gson.annotations.SerializedName;
 
 public class FilialDto extends ApiData {

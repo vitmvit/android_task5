@@ -1,6 +1,6 @@
 package com.clevertec.task5.api;
 
-import com.clevertec.task5.dto.AtmDto;
+import com.clevertec.task5.dto.impl.AtmDto;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

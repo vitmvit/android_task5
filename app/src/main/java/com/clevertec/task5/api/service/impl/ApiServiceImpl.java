@@ -9,14 +9,18 @@ import com.clevertec.task5.api.InfoboxApi;
 import com.clevertec.task5.api.provider.ApiProvider;
 import com.clevertec.task5.api.service.ApiService;
 import com.clevertec.task5.dto.ApiData;
-import com.clevertec.task5.dto.AtmDto;
-import com.clevertec.task5.dto.FilialDto;
-import com.clevertec.task5.dto.InfoboxDto;
+import com.clevertec.task5.dto.impl.AtmDto;
+import com.clevertec.task5.dto.impl.FilialDto;
+import com.clevertec.task5.dto.impl.InfoboxDto;
+import com.clevertec.task5.model.Markers;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.clevertec.task5.constants.Constants.*;
 
 public class ApiServiceImpl implements ApiService {
 
@@ -27,9 +31,9 @@ public class ApiServiceImpl implements ApiService {
 
     public ApiServiceImpl(MapsActivity mapsActivity) {
         this.mapsActivity = mapsActivity;
-        atmApi = new ApiProvider().getRetrofit("https://belarusbank.by/api/").create(AtmApi.class);
-        filialApi = new ApiProvider().getRetrofit("https://belarusbank.by/api/").create(FilialApi.class);
-        infoboxApi = new ApiProvider().getRetrofit("https://belarusbank.by/api/").create(InfoboxApi.class);
+        atmApi = new ApiProvider().getRetrofit(BASE_URL).create(AtmApi.class);
+        filialApi = new ApiProvider().getRetrofit(BASE_URL).create(FilialApi.class);
+        infoboxApi = new ApiProvider().getRetrofit(BASE_URL).create(InfoboxApi.class);
     }
 
     @SuppressLint("CheckResult")
@@ -46,15 +50,38 @@ public class ApiServiceImpl implements ApiService {
                 .subscribe(this::handleResults, this::handleError);
     }
 
-    private void handleResults(List<? extends ApiData> list) {
-        if (list != null && list.size() != 0) {
-            mapsActivity.setApiDataList(list);
+    private void handleResults(List<? extends ApiData> apiDataList) {
+        if (apiDataList != null && apiDataList.size() != 0) {
+            List<Markers> markers = new ArrayList<>();
+            for (ApiData apiData : apiDataList) {
+
+                Markers m = new Markers(typeObject(apiData),
+                        ((AtmDto) apiData).getAddressType(),
+                        ((AtmDto) apiData).getAddress(),
+                        ((AtmDto) apiData).getHouse(),
+                        ((AtmDto) apiData).getGpsX(),
+                        ((AtmDto) apiData).getGpsY());
+                markers.add(m);
+            }
+            mapsActivity.setApiDataList(markers);
         } else {
-            Toast.makeText(mapsActivity, "NO RESULTS FOUND", Toast.LENGTH_LONG).show();
+            Toast.makeText(mapsActivity, NO_OBJECT_IN_CITY_ERROR, Toast.LENGTH_LONG).show();
         }
     }
 
     private void handleError(Throwable t) {
-        Toast.makeText(mapsActivity, "ERROR IN FETCHING API RESPONSE. Try again", Toast.LENGTH_LONG).show();
+        Toast.makeText(mapsActivity, DATA_LOADING_ERROR, Toast.LENGTH_LONG).show();
+    }
+
+    private String typeObject(ApiData apiData) {
+
+        if (apiData instanceof AtmDto) {
+            return ATM_TITLE;
+        } else if (apiData instanceof FilialDto) {
+            return FILIAL_TITLE;
+        } else if (apiData instanceof InfoboxDto) {
+            return INFOBOX_TITLE;
+        }
+        return DEFAULT_TITLE;
     }
 }
