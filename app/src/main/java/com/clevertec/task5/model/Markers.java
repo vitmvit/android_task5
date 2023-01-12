@@ -1,19 +1,14 @@
 package com.clevertec.task5.model;
 
 public class Markers {
-    //Collections.sort(points, (o1, o2) -> o1.x*o1.x + o1.y*o1.y - o2.x*o2.x - o2.y*o2.y);
-    /*
-    общее для всех - тип маркера(банкомат, филиал или инфокиоск)
 
-    ATM, INFOBOX: addressType address house, gpsX, gpsY (у последних 2х параметров SerializedName будет разный)
-    FILIAL: streetType, street, houseNumber, gpsX, gpsY
-    */
     private String typeObject;
     private String addressType;
     private String address;
     private String house;
     private String gpsX;
     private String gpsY;
+    private double distance;
 
     public Markers(String typeObject, String addressType, String address, String house, String gpsX, String gpsY) {
         this.typeObject = typeObject;
@@ -70,6 +65,14 @@ public class Markers {
 
     public void setGpsY(String gpsY) {
         this.gpsY = gpsY;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double x1, double y1) {
+        this.distance = Math.sqrt(Math.pow(Math.abs(Double.parseDouble(this.getGpsX()) - x1), 2) + Math.pow(Math.abs(Double.parseDouble(this.getGpsY()) - y1), 2));
     }
 }
 

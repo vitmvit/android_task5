@@ -1,5 +1,6 @@
 package com.clevertec.task5;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
@@ -7,6 +8,7 @@ import com.clevertec.task5.api.service.ApiService;
 import com.clevertec.task5.api.service.impl.ApiServiceImpl;
 import com.clevertec.task5.databinding.ActivityMapsBinding;
 import com.clevertec.task5.model.Markers;
+import com.clevertec.task5.util.MarkerSorter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,7 +30,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -43,19 +44,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
 
-        LatLng gomel = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
+        LatLng selectPoint = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
 
         mMap.setTrafficEnabled(true);
         mMap.addMarker(
                 new MarkerOptions()
-                        .position(gomel)
+                        .position(selectPoint)
                         .title(SELECT_TITLE)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red))
-
+                        .zIndex(1)
         );
         CameraPosition cameraPosition = CameraPosition.builder()
-                .target(gomel)
-                .zoom(9f)
+                .target(selectPoint)
+                .zoom(14.5f)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
 
@@ -63,17 +64,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         apiService.getAtms(DEFAULT_CITY);
     }
 
+    @SuppressLint("NewApi")
     public void setApiDataList(List<Markers> listMarkers) {
-
-//        Collections.sort(listMarkers, (o1, o2) -> {
-//            return (int) (DEFAULT_LATITUDE_COORD * DEFAULT_LATITUDE_COORD + DEFAULT_LONGITUDE_COORD * DEFAULT_LONGITUDE_COORD - Double.parseDouble(o2.getGpsX()) * Double.parseDouble(o2.getGpsX()) - Double.parseDouble(o2.getGpsY()) * Double.parseDouble(o2.getGpsY()));
-//        });
-
-        addMarkers(listMarkers.subList(0, COUNT_MARKERS));
+        List<Markers> m = new MarkerSorter().sortMarkersList(listMarkers, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
+        addMarkers(m.subList(0, COUNT_MARKERS + 1));
     }
 
     public void addMarkers(List<Markers> markers) {
-
         if (markers != null && markers.size() != 0) {
             for (Markers m : markers) {
                 mMap.addMarker(

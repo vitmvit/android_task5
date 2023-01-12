@@ -183,4 +183,3 @@ public class AtmDto extends ApiData {
         this.atmPrinter = atmPrinter;
     }
 }
-
