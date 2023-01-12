@@ -1,6 +1,5 @@
 package com.clevertec.task5;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
@@ -64,7 +63,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         apiService.getAtms(DEFAULT_CITY);
     }
 
-    @SuppressLint("NewApi")
     public void setApiDataList(List<Markers> listMarkers) {
         List<Markers> m = new MarkerSorter().sortMarkersList(listMarkers, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
         addMarkers(m.subList(0, COUNT_MARKERS + 1));
