@@ -14,8 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Comparator;
@@ -45,22 +45,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
 
-        LatLng selectPoint = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
-
-        mMap.setTrafficEnabled(true);
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(selectPoint)
-                        .title(SELECT_TITLE)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red))
-                        .zIndex(1)
-        );
-        CameraPosition cameraPosition = CameraPosition.builder()
-                .target(selectPoint)
-                .zoom(14.5f)
-                .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
-
         ApiService apiService = new ApiServiceImpl(this);
         apiService.getAtms(DEFAULT_CITY);
     }
@@ -76,19 +60,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void addMarkers(List<Marker> markerList) {
-        if (markerList != null && markerList.size() != 0) {
-            for (Marker m : markerList) {
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+                LatLng selectPoint = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
+                boundsBuilder.include(selectPoint);
+
+                mMap.setTrafficEnabled(true);
                 mMap.addMarker(
                         new MarkerOptions()
-                                .position(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())))
-                                .title(m.getTypeObject())
-                                .snippet(m.getAddressType() + " " + m.getAddress() + " " + m.getHouse())
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue))
-
+                                .position(selectPoint)
+                                .title(SELECT_TITLE)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red))
+                                .zIndex(1)
                 );
+
+                if ((markerList != null) && (markerList.size() != 0)) {
+                    for (Marker m : markerList) {
+                        boundsBuilder.include(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())));
+                        mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())))
+                                        .title(m.getTypeObject())
+                                        .snippet(m.getAddressType() + " " + m.getAddress() + " " + m.getHouse())
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue))
+
+                        );
+                    }
+                } else {
+                    Toast.makeText(MapsActivity.this, NO_OBJECT_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
+                }
+
+                try {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 70));
+                } catch (Exception e) {
+                    Toast.makeText(MapsActivity.this, MAP_RENDERING_ERROR, Toast.LENGTH_SHORT).show();
+                }
             }
-        } else {
-            Toast.makeText(this, NO_OBJECT_IN_CITY_ERROR, Toast.LENGTH_SHORT).show();
-        }
+        });
     }
 }

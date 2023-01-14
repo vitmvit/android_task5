@@ -28,6 +28,7 @@ public class Constants {
 
     //------------------------------------------------------------------------------------------------------------------
     public static final String NO_OBJECT_IN_CITY_ERROR = "Выбрвнные объекты отсутствуют в заданном городе";
+    public static final String MAP_RENDERING_ERROR = "Проблема отрисовки карты";
     public static final String DATA_LOADING_ERROR = "Ошибка загрузки данных";
 
 }
