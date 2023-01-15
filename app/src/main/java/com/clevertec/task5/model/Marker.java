@@ -9,6 +9,7 @@ public class Marker {
     private String gpsX;
     private String gpsY;
     private double distance;
+    private String snippet;
 
     public Marker(String typeObject, String addressType, String address, String house, String gpsX, String gpsY, double distance) {
         this.typeObject = typeObject;
@@ -74,6 +75,14 @@ public class Marker {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public String getSnippet() {
+        return addressType + " " + address + " " + house;
+    }
+
+    public void setSnippet(String snippet) {
+        this.snippet = snippet;
     }
 }
 

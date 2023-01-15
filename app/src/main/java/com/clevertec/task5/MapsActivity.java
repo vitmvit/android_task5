@@ -67,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng selectPoint = new LatLng(DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
                 boundsBuilder.include(selectPoint);
 
-                mMap.setTrafficEnabled(true);
                 mMap.addMarker(
                         new MarkerOptions()
                                 .position(selectPoint)
@@ -83,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 new MarkerOptions()
                                         .position(new LatLng(Double.parseDouble(m.getGpsX()), Double.parseDouble(m.getGpsY())))
                                         .title(m.getTypeObject())
-                                        .snippet(m.getAddressType() + " " + m.getAddress() + " " + m.getHouse())
+                                        .snippet(m.getSnippet())
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue))
 
                         );
