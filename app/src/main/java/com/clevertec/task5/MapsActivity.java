@@ -53,9 +53,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void setApiDataList(List<Marker> markerList) {
         markerList.sort(Comparator.comparing(Marker::getDistance));
         addMarkers(
-                markerList.size() < COUNT_MARKERS + 1
+                markerList.size() < COUNT_MARKERS
                         ? markerList
-                        : markerList.subList(0, COUNT_MARKERS + 1)
+                        : markerList.subList(0, COUNT_MARKERS)
         );
     }
 
